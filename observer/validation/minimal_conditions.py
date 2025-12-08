@@ -129,13 +129,14 @@ class MinimalConditions:
         if probability_ppb <= 100:
             level = MessageLevel.CRITICAL
 
-        messages.append(
-            mb.build(
-                level,
-                f"didn't submit a fast update in {n_blocks} blocks "
-                f"(false positive probability: {probability_ppb / 10_000_000:.5f})%",
+        if probability_ppb / 10_000_000 < 100:
+            messages.append(
+                mb.build(
+                    level,
+                    f"didn't submit a fast update in {n_blocks} blocks "
+                    f"(false positive probability: {probability_ppb / 10_000_000:.5f})%",
+                )
             )
-        )
 
         return messages
 
