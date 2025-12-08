@@ -229,3 +229,4 @@ class Configuration:
     epoch: Epoch
     notification: Notification
     fee_threshold: int
+    min_to_compare_blocks: int

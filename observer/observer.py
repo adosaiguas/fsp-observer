@@ -151,11 +151,11 @@ def calculate_update_from_tx(config: Configuration, w: AsyncWeb3, tx: TxData):
     return signing_policy_address, address, signed_array
 
 
-async def get_block_production(w: AsyncWeb3) -> float:
+async def get_block_production(w: AsyncWeb3, config: Configuration) -> float:
     latest_block = await w.eth.get_block("latest")
     assert "timestamp" in latest_block
     assert "number" in latest_block
-    to_compare = min(1_000_000, int(latest_block["number"]) - 1)
+    to_compare = min(config.min_to_compare_blocks, int(latest_block["number"]) - 1)
     comparison_block = await w.eth.get_block(int(latest_block["number"]) - to_compare)
     assert "timestamp" in comparison_block
     time_delta = latest_block["timestamp"] - comparison_block["timestamp"]
@@ -360,7 +360,7 @@ async def observer_loop(config: Configuration) -> None:
     )
     spb = SigningPolicy.builder().for_epoch(reward_epoch.next)
 
-    block_production = await get_block_production(w)
+    block_production = await get_block_production(w, config)
     maximum_exponent = calculate_maximum_exponent(block_production, config)
 
     # print("Signing policy created for reward epoch", current_rid)
@@ -419,7 +419,11 @@ async def observer_loop(config: Configuration) -> None:
     contracts = cm.get_contracts_list()
     event_signatures = cm.get_events()
 
-    entity = signing_policy.entity_mapper.by_identity_address[tia]
+    if tia in signing_policy.entity_mapper.by_identity_address:
+        entity = signing_policy.entity_mapper.by_identity_address[tia]
+    else:
+        raise ValueError("Configured identity address not found in signing policy")
+    
     fum = FastUpdatesManager(
         block_number, FastUpdate(reward_epoch.id, entity.signing_policy_address, [])
     )

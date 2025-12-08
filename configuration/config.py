@@ -149,6 +149,9 @@ def get_config() -> Configuration:
     _fee_threshold = os.environ.get("FEE_THRESHOLD", "25")
     fee_threshold = int(_fee_threshold)
 
+    _min_to_compare_blocks = os.environ.get("MIN_TO_COMPARE_BLOCKS", "500000")
+    min_to_compare_blocks = int(_min_to_compare_blocks)
+
     config = Configuration(
         rpc_url=rpc_url,
         p_chain_rpc_url=p_chain_rpc_url,
@@ -158,6 +161,7 @@ def get_config() -> Configuration:
         epoch=get_epoch(chain_id),
         notification=get_notification_config(),
         fee_threshold=fee_threshold,
+        min_to_compare_blocks=min_to_compare_blocks,
     )
 
     return config
