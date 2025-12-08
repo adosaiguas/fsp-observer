@@ -1,0 +1,13 @@
+services:
+  fsp-observer:
+    image: ghcr.io/adosaiguas/fsp-observer:main
+    environment:
+      - RPC_BASE_URL=http://172.17.0.1:9650
+      - IDENTITY_ADDRESS=0x0000000000000000000000000000000000000000
+      - NOTIFICATION_DISCORD_WEBHOOK=https://discord.com/api/webhooks/secret/secret
+      - NOTIFICATION_TELEGRAM_BOT_TOKEN=secret
+      - NOTIFICATION_TELEGRAM_CHAT_ID=secret
+      - NOTIFICATION_SLACK_WEBHOOK=https://hooks.slack.com/services/secret/secret/secret
+      - NOTIFICATION_GENERIC_WEBHOOK=http://host:port/path
+    restart: unless-stopped
+    container_name: fsp-observer
