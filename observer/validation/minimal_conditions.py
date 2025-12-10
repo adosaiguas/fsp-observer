@@ -22,16 +22,29 @@ class MinimalConditionsConfig:
     ftso_median_band_bips = 50
     ftso_median_threshold_bips = 8000
     fast_updates_updates_per_block = 1.5
+    fast_updates_probability_threshold_ppb = 100
     staking_threshold_bips = 8000
     fdc_participation_threshold_bips = 8000
 
 
 class MinimalConditions:
+    fast_update_probability_threshold_ppb: int = (
+        MinimalConditionsConfig.fast_updates_probability_threshold_ppb
+    )
     reward_epoch_id: int | None = None
 
     time_period: Interval = Interval.LAST_2_HOURS
 
     network: int | None = None
+
+    def __init__(
+        self,
+        fast_update_probability_threshold_ppb: int | None = None,
+    ) -> None:
+        if fast_update_probability_threshold_ppb is not None:
+            self.fast_update_probability_threshold_ppb = (
+                fast_update_probability_threshold_ppb
+            )
 
     def for_network(self, network: int) -> Self:
         self.network = network
@@ -129,7 +142,8 @@ class MinimalConditions:
         if probability_ppb <= 100:
             level = MessageLevel.CRITICAL
 
-        if probability_ppb / 10_000_000 < 100:
+        threshold_ppb = self.fast_update_probability_threshold_ppb
+        if probability_ppb / 10_000_000 <= threshold_ppb:
             messages.append(
                 mb.build(
                     level,

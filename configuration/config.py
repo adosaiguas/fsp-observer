@@ -152,6 +152,14 @@ def get_config() -> Configuration:
     _min_to_compare_blocks = os.environ.get("MIN_TO_COMPARE_BLOCKS", "500000")
     min_to_compare_blocks = int(_min_to_compare_blocks)
 
+    _fast_update_probability_threshold_ppb = os.environ.get(
+        "FAST_UPDATE_PROBABILITY_THRESHOLD_PPB",
+        "100",
+    )
+    fast_update_probability_threshold_ppb = int(
+        _fast_update_probability_threshold_ppb
+    )
+
     config = Configuration(
         rpc_url=rpc_url,
         p_chain_rpc_url=p_chain_rpc_url,
@@ -162,6 +170,7 @@ def get_config() -> Configuration:
         notification=get_notification_config(),
         fee_threshold=fee_threshold,
         min_to_compare_blocks=min_to_compare_blocks,
+        fast_update_probability_threshold_ppb=fast_update_probability_threshold_ppb,
     )
 
     return config

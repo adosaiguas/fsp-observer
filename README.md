@@ -20,7 +20,10 @@ error messages to:
 ## Setting up and using fsp-observer
 
 The easiest way to run is via docker. The only required env variables are
-`RPC_BASE_URL` and `IDENTITY_ADDRESS`. Others can be set as desired.
+`RPC_BASE_URL` and `IDENTITY_ADDRESS`. Others can be set as desired. For example,
+`FAST_UPDATE_PROBABILITY_THRESHOLD_PPB` sets the minimum false positive
+probability (in parts per billion) that triggers fast update alerts. It defaults
+to `100` when not provided.
 
 ```bash
 docker run \
@@ -44,3 +47,6 @@ RPC_BASE_URL="https://flare-api.flare.network" \
   IDENTITY_ADDRESS="0x0000000000000000000000000000000000000000" \
   python main.py
 ```
+
+If it complains about a block not being found your observer node might not have enough history,
+try to set MIN_TO_COMPARE_BLOCKS to a lower value (default is 1_000_000).

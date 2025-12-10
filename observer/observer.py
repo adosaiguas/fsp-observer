@@ -442,7 +442,7 @@ async def observer_loop(config: Configuration) -> None:
     }
 
     minimal_conditions = (
-        MinimalConditions()
+        MinimalConditions(config.fast_update_probability_threshold_ppb)
         .for_network(config.chain_id)
         .for_reward_epoch(reward_epoch.id)
     )

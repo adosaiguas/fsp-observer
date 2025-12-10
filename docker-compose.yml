@@ -9,5 +9,7 @@ services:
       - NOTIFICATION_TELEGRAM_CHAT_ID=secret
       - NOTIFICATION_SLACK_WEBHOOK=https://hooks.slack.com/services/secret/secret/secret
       - NOTIFICATION_GENERIC_WEBHOOK=http://host:port/path
+      - MIN_TO_COMPARE_BLOCKS=1000000
+      - FAST_UPDATE_PROBABILITY_THRESHOLD_PPB=100
     restart: unless-stopped
     container_name: fsp-observer
