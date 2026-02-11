@@ -15,7 +15,7 @@ class AddressChecker:
         config: Configuration,
         w: AsyncWeb3,
     ) -> Sequence[Message]:
-        mb = Message.builder()
+        mb = Message.builder().add(network=config.chain_id)
         messages = []
 
         for name, addr in address_list:
