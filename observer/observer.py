@@ -13,6 +13,7 @@ from eth_abi.abi import encode
 from eth_account._utils.signing import to_standard_v
 from eth_account.messages import _hash_eip191_message, encode_defunct
 from eth_keys.datatypes import Signature as EthSignature
+from eth_utils.address import to_checksum_address
 from py_flare_common.b58 import flare_b58_encode_check
 from py_flare_common.fsp.epoch.epoch import RewardEpoch
 from py_flare_common.fsp.messaging import (
@@ -262,6 +263,24 @@ async def get_signing_policy_events(
         }
     )
 
+    _relay_patch_sps = await w.eth.get_logs(
+        {
+            "address": [
+                to_checksum_address("0x92a6E1127262106611e1e129BB64B6D8654273F7"),
+                to_checksum_address("0x97702e350CaEda540935d92aAf213307e9069784"),
+                to_checksum_address("0x57a4c3676d08Aa5d15410b5A6A80fBcEF72f3F45"),
+                to_checksum_address("0x67a916E175a2aF01369294739AA60dDdE1Fad189"),
+            ],
+            "fromBlock": start_block,
+            "toBlock": end_block,
+            "topics": [
+                "0x"
+                + config.contracts.Relay.events["SigningPolicyInitialized"].signature
+            ],
+        }
+    )
+    block_logs.extend(_relay_patch_sps)
+
     for log in block_logs:
         sig = log["topics"][0]
 
@@ -501,6 +520,33 @@ async def observer_loop(config: Configuration) -> None:
                     "toBlock": block,
                 }
             )
+            _relay_patch_sps = await w.eth.get_logs(
+                {
+                    "address": [
+                        to_checksum_address(
+                            "0x92a6E1127262106611e1e129BB64B6D8654273F7"
+                        ),
+                        to_checksum_address(
+                            "0x97702e350CaEda540935d92aAf213307e9069784"
+                        ),
+                        to_checksum_address(
+                            "0x57a4c3676d08Aa5d15410b5A6A80fBcEF72f3F45"
+                        ),
+                        to_checksum_address(
+                            "0x67a916E175a2aF01369294739AA60dDdE1Fad189"
+                        ),
+                    ],
+                    "fromBlock": block,
+                    "toBlock": block,
+                    "topics": [
+                        "0x"
+                        + config.contracts.Relay.events[
+                            "SigningPolicyInitialized"
+                        ].signature
+                    ],
+                }
+            )
+            block_logs.extend(_relay_patch_sps)
 
             tx_messages = []
             event_messages = []
